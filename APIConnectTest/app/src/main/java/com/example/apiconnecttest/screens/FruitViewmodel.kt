@@ -22,7 +22,6 @@ class FruitViewmodel : ViewModel() {
                 }
                 _fruits.value = fruitsList
             } catch (e: Exception) {
-                // Handle the exception, for example log it or show an error message
                 e.printStackTrace()
                 _fruits.value = emptyList()
             }
