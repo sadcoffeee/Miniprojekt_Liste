@@ -1,21 +1,25 @@
 package com.example.miniprojektliste.network
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
+@Entity(tableName = "fruits")
 @Serializable
 data class Fruit(
-    val name: String,
-    val id: Int,
-    val family: String,
-    val order: String,
-    val genus: String,
-    val nutritions: Nutrition
+    @ColumnInfo(name = "name") val name: String,
+    @PrimaryKey() val id: Int,
+    @ColumnInfo(name = "family") val family: String,
+    @ColumnInfo(name = "order") val order: String,
+    @ColumnInfo(name = "genus") val genus: String,
+    @ColumnInfo(name = "nutritions") val nutritions: Nutrition
 ) {
     @Serializable
     data class Nutrition(
-        val calories: Int,
-        val fat: Double,
-        val sugar: Double,
-        val carbohydrates: Double,
-        val protein: Double
+        @ColumnInfo(name = "calories") val calories: Int,
+        @ColumnInfo(name = "fat") val fat: Double,
+        @ColumnInfo(name = "sugar") val sugar: Double,
+        @ColumnInfo(name = "carbs") val carbohydrates: Double,
+        @ColumnInfo(name = "protein") val protein: Double
     )
 }
