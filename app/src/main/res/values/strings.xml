@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Miniprojekt Liste</string>
+    <string name="add_item_header">Tilføj frugter</string>
+    <string name="choose_item_tx">Vælg frugt</string>
+    <string name="amount">Mængde</string>
+    <string name="btn_text">Tilføj frugt(er)</string>
 </resources>

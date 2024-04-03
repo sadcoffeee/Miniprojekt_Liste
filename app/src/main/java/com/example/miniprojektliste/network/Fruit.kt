@@ -5,16 +5,14 @@ import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
 @Entity(tableName = "fruits")
-@Serializable
 data class Fruit(
     @ColumnInfo(name = "name") val name: String,
-    @PrimaryKey() val id: Int,
+    @PrimaryKey(autoGenerate = false) val id: Int,
     @ColumnInfo(name = "family") val family: String,
     @ColumnInfo(name = "order") val order: String,
     @ColumnInfo(name = "genus") val genus: String,
     @ColumnInfo(name = "nutritions") val nutritions: Nutrition
 ) {
-    @Serializable
     data class Nutrition(
         @ColumnInfo(name = "calories") val calories: Int,
         @ColumnInfo(name = "fat") val fat: Double,

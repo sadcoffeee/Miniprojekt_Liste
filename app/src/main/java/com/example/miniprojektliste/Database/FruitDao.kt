@@ -34,4 +34,3 @@ interface FruitDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertListOfObjects(objects: List<Fruit>)
 }
-
