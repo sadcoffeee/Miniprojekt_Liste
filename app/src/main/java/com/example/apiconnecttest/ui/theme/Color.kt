@@ -1,4 +1,4 @@
-package com.example.miniprojektliste.ui.theme
+package com.example.apiconnecttest.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,12 +1,11 @@
-package com.example.miniprojektliste.screens
-
+package com.example.apiconnecttest.screens
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.miniprojektliste.network.Fruit
-import com.example.miniprojektliste.network.FruitsApi
+import com.example.apiconnecttest.network.Fruit
+import com.example.apiconnecttest.network.FruitsApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

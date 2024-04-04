@@ -1,1 +1,1 @@
-Miniproject for making an interactive list with access to a fruit database. Made in Android studio with kotlin. Parts of this will be used for our semester project
+This is the dumpster branch that hosts a different app that showcases the exact code used to generate our network error
