@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //val dao: FruitDao = AppDatabase.getDatabase(this).fruitDao()
+        val dao: FruitDao = AppDatabase.getDatabase(this).fruitDao()
         //GlobalScope.launch { AppDatabase.getDatabase(applicationContext).fruitDao().getAll() }
 
         setContent {
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AddFruitPageLayout(AppDatabase.getDatabase(this).fruitDao())
+                    AddFruitPageLayout(dao)
                 }
             }
         }

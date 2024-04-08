@@ -19,9 +19,6 @@ interface FruitDao {
             "name LIKE :last LIMIT 1")
     fun findByName(first: String, last: String): Fruit
 
-    @Query("INSERT INTO fruits VALUES(:id, :name, :cal)")
-    fun addFruit(id: Int, name: String, cal: Int)
-
     @Insert
     fun insertAll(vararg fruits: Fruit)
 
@@ -32,5 +29,5 @@ interface FruitDao {
     suspend fun insertObject(obj: Fruit)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertListOfObjects(objects: List<Fruit>)
+    suspend fun insertListOfObjects(objects: List<Fruit>)
 }

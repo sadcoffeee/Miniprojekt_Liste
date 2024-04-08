@@ -1,13 +1,15 @@
 package com.example.miniprojektliste.network
+
 import androidx.room.ColumnInfo
+import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
 @Entity(tableName = "fruits")
 data class Fruit(
-    @ColumnInfo(name = "name") val name: String,
     @PrimaryKey(autoGenerate = false) val id: Int,
+    @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "family") val family: String,
     @ColumnInfo(name = "order") val order: String,
     @ColumnInfo(name = "genus") val genus: String,

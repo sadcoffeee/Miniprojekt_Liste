@@ -66,8 +66,8 @@ fun AddFruitPageLayout(
         Button(onClick = {
             GlobalScope.launch { dao.insertObject(
                 Fruit(
-                    name = "Strawberry",
                     id = 1,
+                    name = "Strawberry",
                     family = "Rosaceae",
                     order = "Rosales",
                     genus = "Fragaria",
