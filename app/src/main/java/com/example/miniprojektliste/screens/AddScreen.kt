@@ -22,14 +22,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.R
 import com.example.miniprojektliste.network.Fruit
+import com.example.miniprojektliste.network.Nutrition
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun AddFruitPageLayout(
     dao: FruitDao,
@@ -71,22 +73,28 @@ fun AddFruitPageLayout(
         )
         Spacer(modifier = modifier.height(32.dp))
         Button(onClick = {
-            GlobalScope.launch { dao.insertObject(
-                Fruit(
-                    id = 1,
+
+            GlobalScope.launch {
+                val fruitToAdd = Fruit(
                     name = "Strawberry",
                     family = "Rosaceae",
                     order = "Rosales",
                     genus = "Fragaria",
-                    nutritions = Fruit.Nutrition(
-                        calories = 29,
-                        fat = 0.4,
-                        sugar = 5.4,
-                        carbohydrates = 5.5,
-                        protein = 0.8
-                        )
-                    )
                 )
+                dao.insertObject(fruitToAdd)
+
+                val insertedFruit = dao.findByName("Strawberry")
+                val fruitId = insertedFruit.id
+
+                val nutritionsToAdd = Nutrition(
+                    fruitId = fruitId,
+                    calories = 81,
+                    fat = 0.4,
+                    sugar = 5.4,
+                    carbohydrates = 5.5,
+                    protein = 0.8
+                )
+                dao.insertObjectN(nutritionsToAdd)
             }
         }
         ) {
