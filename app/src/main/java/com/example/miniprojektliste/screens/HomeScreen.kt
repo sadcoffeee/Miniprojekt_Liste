@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -26,59 +29,32 @@ import androidx.compose.ui.unit.dp
 
 class HomeScreen {
 
+
     @Composable
-    fun CardRow(items: List<String>, amount: List<String>) {
-        Row {
-            items.forEachIndexed { index, item ->
-                Card(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .weight(1f),
-                    shape = RoundedCornerShape(8.dp),
-
-
-                    ) {
-                    Text(
-                        text = item,
+    fun gridOfFruitsItem() {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            content = {
+                items(100) { i ->
+                    Box(
                         modifier = Modifier
-                            .padding(top = 32.dp)
-                            .align(Alignment.CenterHorizontally)
-
-
+                            .padding(8.dp)
+                            .aspectRatio(1f),
+                        contentAlignment = Alignment.Center
                     )
-                    Text(
-                        text = amount[index],
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .align(Alignment.CenterHorizontally)
+                    {
+                        Text(text = "display navnet fra listen")
+                        Text(text = "Display amount fra listen")
+                        Text(text = "Display Calories fra listen")
 
-                    )
-
+                    }
                 }
             }
-        }
+        )
     }
 
 
-    @Composable
-    fun CardItem(name: String, rowItems: List<String>, amount: List<String>) {
-        Card(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
 
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 32.dp)
-
-            ) {
-                Text(text = name)
-                CardRow(items = rowItems, amount = amount)
-
-            }
-        }
-    }
 
 
     @Composable
@@ -137,8 +113,8 @@ class HomeScreen {
     @Composable
     fun PreviewLazyColumnWithCards() {
         val category = listOf(
-            "Condiments", "Meat", "Dairy", "Eggs", "Produce", "Drinks", "Bread", "Leftovers"
-        )
+            "Condiments", "Meat", "Dairy", "Eggs",
+            )
         val rowItems = listOf(
             "Vandmelon", "Æble", "Banan"
         )
@@ -149,5 +125,57 @@ class HomeScreen {
         LazyColumnWithCards(category = category, rowItems = rowItems, amount = amount)
 
         BottomBar()
+    }
+}
+
+@Composable
+fun CardRow(items: List<String>, amount: List<String>) {
+    Row {
+        items.forEachIndexed { index, item ->
+            Card(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(1f),
+                shape = RoundedCornerShape(8.dp),
+
+
+                ) {
+                Text(
+                    text = item,
+                    modifier = Modifier
+                        .padding(top = 32.dp)
+                        .align(Alignment.CenterHorizontally)
+
+
+                )
+                Text(
+                    text = amount[index],
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .align(Alignment.CenterHorizontally)
+
+                )
+
+            }
+        }
+    }
+}
+@Composable
+fun CardItem(name: String, rowItems: List<String>, amount: List<String>) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(bottom = 32.dp)
+
+        ) {
+            Text(text = name)
+            CardRow(items = rowItems, amount = amount)
+
+        }
     }
 }
