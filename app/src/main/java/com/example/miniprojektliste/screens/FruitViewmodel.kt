@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.network.Fruit
 import com.example.miniprojektliste.network.FruitsApi
 import kotlinx.coroutines.Dispatchers
@@ -27,5 +28,11 @@ class FruitViewmodel : ViewModel() {
                 _fruits.value = emptyList()
             }
         }
+    }
+
+    fun getFruitDetails(fruitId: Int, dao: FruitDao): Pair<String, Int> {
+        val fruitName = dao.findFruitNameById(fruitId)
+        val fruitCal = dao.findFruitCalById(fruitId)
+        return Pair(fruitName, fruitCal)
     }
 }

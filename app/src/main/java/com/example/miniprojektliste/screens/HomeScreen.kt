@@ -2,6 +2,7 @@ package com.example.miniprojektliste.screens
 
 import android.content.Context
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,12 +42,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.MainActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.format.TextStyle
 
 class HomeScreen {
@@ -76,10 +81,11 @@ class HomeScreen {
                     modifier = Modifier
                         .background(Color.Yellow)
                         .fillMaxWidth()
-                        .height(1000.dp)
+                        .height(calculateCardHeight(itemList[item]))
                         .wrapContentSize()
                         .padding(16.dp)
                 ){
+                    Text(text = category[item])
                     GridOfFruitsItem(itemList = itemList[item], context = context)
                 }
             }
@@ -91,9 +97,6 @@ class HomeScreen {
     fun GridOfFruitsItem(itemList: List<Int>, context: Context) {
 
         val dao: FruitDao = AppDatabase.getDatabase(context).fruitDao()
-
-        var name: String by remember { mutableStateOf("") }
-        var cal: Int by remember { mutableIntStateOf(0) }
 
         Card (
             modifier = Modifier
@@ -107,11 +110,6 @@ class HomeScreen {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(itemList.size) { item ->
-                    LaunchedEffect(Unit){
-                        name = dao.findFruitNameById(itemList[item])
-                        cal = dao.findFruitCalById(itemList[item])
-                    }
-
                     Box (
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -120,9 +118,10 @@ class HomeScreen {
                             .clip(RoundedCornerShape(5.dp))
                             .background(Color.Green)
                     ){
+                        //val (fruitName, fruitCal) = FruitViewmodel().getFruitDetails(itemList[item], dao)
                         Column {
-                            Text(text = name, fontSize = 32.sp)
-                            Text(text = cal.toString(), fontSize = 16.sp)
+                            Text(text = "fruitName", fontSize = 32.sp)
+                            Text(text = "fruitCal.toString()", fontSize = 16.sp)
                         }
                     }
                 }
@@ -130,7 +129,18 @@ class HomeScreen {
         }
     }
 
+    fun calculateCardHeight(itemList: List<Int>): Dp {
+        //calculate the nuber of rows in the grid based on the number of items
+        val numRows = (itemList.size + 2) / 3 //assuming 3 items per row
 
+        //calculate the height of each row, adjut if we need
+        val rowHeight = 150.dp
+
+        //Calculate the total height of the card
+        val totalHeight = numRows * rowHeight
+
+        return totalHeight
+    }
 
 
     @Preview(
