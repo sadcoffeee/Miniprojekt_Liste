@@ -43,6 +43,10 @@ interface FruitDao {
     suspend fun getNutritionByFruitId(fruitId: Int): Nutrition?
 
     @Query("SELECT fruitId FROM nutritions WHERE calories > :min AND calories < :max")
-    fun sortByCals( min: Int, max: Int): List<Int>?
+    suspend fun sortByCals( min: Int, max: Int): List<Int>
 
+    @Query("SELECT name FROM fruits WHERE :fruitId = id")
+    suspend fun findFruitNameById(fruitId: Int): String
+    @Query("SELECT calories FROM nutritions WHERE :fruitId = fruitId")
+    suspend fun findFruitCalById(fruitId: Int): Int
 }

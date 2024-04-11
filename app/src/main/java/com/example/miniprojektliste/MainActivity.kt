@@ -7,13 +7,18 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.screens.AddFruitPageLayout
 import com.example.miniprojektliste.screens.FruitViewmodel
 import com.example.miniprojektliste.screens.HomeScreen
 import com.example.miniprojektliste.ui.theme.MiniprojektListeTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -24,14 +29,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val dao: FruitDao = AppDatabase.getDatabase(this).fruitDao()
-        GlobalScope.launch { AppDatabase.getDatabase(applicationContext).fruitDao().getAll() }
-
-        val listOfCategorys: List<List<Int>?
-                > = listOf(
-            dao.sortByCals(0,70),
-            dao.sortByCals(70, 100),
-            dao.sortByCals(100,300)
-        )
 
         setContent {
             MiniprojektListeTheme {
@@ -40,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    HomeScreen().HomeScreenPage(context = this)
                 }
             }
         }
