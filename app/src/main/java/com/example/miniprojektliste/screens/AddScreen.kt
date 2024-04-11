@@ -13,6 +13,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -72,29 +73,111 @@ fun AddFruitPageLayout(
             onValueChanged = { amountString = it }
         )
         Spacer(modifier = modifier.height(32.dp))
+
+        var listIndex by remember { mutableIntStateOf(0) }
+        val addFruits = listOf(
+            Fruit(
+                name = "Strawberry",
+                family = "Rosaceae",
+                order = "Rosales",
+                genus = "Fragaria",
+            ),
+            Fruit(
+                name = "Banana",
+                family = "Musaceae",
+                order = "Zingiberales",
+                genus = "Musa",
+            ),
+            Fruit(
+                name = "Tomato",
+                family = "Solanaceae",
+                order = "Solanales",
+                genus = "Solanum",
+            ),
+            Fruit(
+                name = "Pear",
+                family = "Rosaceae",
+                order = "Rosales",
+                genus = "Pyrus",
+            ),
+            Fruit(
+                name = "Fig",
+                family = "Moraceae",
+                order = "Rosales",
+                genus = "Ficus",
+            ),
+            Fruit(
+                name = "Orange",
+                family = "Rutaceae",
+                order = "Sapindales",
+                genus = "Citrus",
+            ),
+        )
+
+
         Button(onClick = {
 
             GlobalScope.launch {
-                val fruitToAdd = Fruit(
-                    name = "Strawberry",
-                    family = "Rosaceae",
-                    order = "Rosales",
-                    genus = "Fragaria",
-                )
+                val fruitToAdd = addFruits[listIndex]
                 dao.insertObject(fruitToAdd)
 
-                val insertedFruit = dao.findByName("Strawberry")
+                val insertedFruit = dao.findByName(addFruits[listIndex].name)
                 val fruitId = insertedFruit.id
 
-                val nutritionsToAdd = Nutrition(
-                    fruitId = fruitId,
-                    calories = 81,
-                    fat = 0.4,
-                    sugar = 5.4,
-                    carbohydrates = 5.5,
-                    protein = 0.8
+                val addNutrition = listOf(
+                    Nutrition(
+                        fruitId = fruitId,
+                        calories = 81,
+                        fat = 0.4,
+                        sugar = 5.4,
+                        carbohydrates = 5.5,
+                        protein = 0.8
+                    ),
+                    Nutrition(
+                        fruitId = fruitId,
+                        calories = 96,
+                        fat = 0.2,
+                        sugar = 17.2,
+                        carbohydrates = 22.0,
+                        protein = 1.0
+                    ),
+                    Nutrition(
+                        fruitId = fruitId,
+                        calories = 74,
+                        fat = 0.2,
+                        sugar = 2.6,
+                        carbohydrates = 3.9,
+                        protein = 0.9
+                    ),
+                    Nutrition(
+                        fruitId = fruitId,
+                        calories = 57,
+                        fat = 0.1,
+                        sugar = 10.0,
+                        carbohydrates = 15.0,
+                        protein = 0.4
+                    ),
+                    Nutrition(
+                        fruitId = fruitId,
+                        calories = 74,
+                        fat = 0.3,
+                        sugar = 16.0,
+                        carbohydrates = 19.0,
+                        protein = 0.8
+                    ),
+                    Nutrition(
+                        fruitId = fruitId,
+                        calories = 43,
+                        fat = 0.2,
+                        sugar = 8.2,
+                        carbohydrates = 8.3,
+                        protein = 1.0
+                    ),
                 )
+
+                val nutritionsToAdd = addNutrition[listIndex]
                 dao.insertObjectN(nutritionsToAdd)
+                listIndex++
             }
         }
         ) {
