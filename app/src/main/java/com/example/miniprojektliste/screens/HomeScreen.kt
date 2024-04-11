@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,7 +54,9 @@ import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.MainActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.wait
 import java.time.format.TextStyle
 
 class HomeScreen {
@@ -105,8 +108,25 @@ class HomeScreen {
     fun GridOfFruitsItem(itemList: List<Int>, context: Context) {
 
         val dao: FruitDao = AppDatabase.getDatabase(context).fruitDao()
-        var fruitName by remember { mutableStateOf("") }
-        var fruitCal by remember { mutableIntStateOf(0) }
+        //var fruitName by remember { mutableStateOf("") }
+        //var fruitCal by remember { mutableIntStateOf(0) }
+        var fruitList by remember { mutableStateOf<List<String>>(emptyList()) }
+        var calList by remember { mutableStateOf<List<Int>>(emptyList()) }
+
+        LaunchedEffect(Unit) {
+            val job = launch {
+                for (i in itemList) {
+                    fruitList = fruitList.toMutableList().apply { add(dao.findFruitNameById(i)) }
+                }
+            }
+            val job2 = launch {
+                for (i in itemList) {
+                    calList = calList.toMutableList().apply { add(dao.findFruitCalById(i)) }
+                }
+            }
+            job.join()
+            job2.join()
+        }
 
         Card (
             modifier = Modifier
@@ -129,13 +149,14 @@ class HomeScreen {
                             .background(Color.Green)
                     ){
                         //val (fruitName, fruitCal) = FruitViewmodel().getFruitDetails(itemList[item], dao)
+
                         Column {
                             Text(
-                                text = "dao.findFruitNameById(itemList[item])",
+                                text = fruitList.getOrNull(item) ?: "Loading...",
                                 fontSize = 32.sp
                             )
                             Text(
-                                text = "dao.findFruitCalById(itemList[item]).toString()",
+                                text = calList.getOrNull(item)?.toString() ?: "Loading...",
                                 fontSize = 16.sp
                             )
                         }
@@ -149,7 +170,7 @@ class HomeScreen {
         //calculate the nuber of rows in the grid based on the number of items
         val numRows = (itemList.size + 2) / 3 //assuming 3 items per row
 
-        //calculate the height of each row, adjut if we need
+        //calculate the height of each row, adjust if we need
         val rowHeight = 180.dp
 
         if (numRows > 1) {
