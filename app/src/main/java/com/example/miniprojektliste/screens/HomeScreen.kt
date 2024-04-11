@@ -21,17 +21,23 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.miniprojektliste.Database.AppDatabase
+import com.example.miniprojektliste.Database.FruitDao
+import com.example.miniprojektliste.MainActivity
 
 class HomeScreen {
 
-
     @Composable
-    fun gridOfFruitsItem() {
+    fun GridOfFruitsItem(itemsDisplay: List<Int>) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             content = {
@@ -58,15 +64,19 @@ class HomeScreen {
 
 
     @Composable
-    fun LazyColumnWithCards(category: List<String>, rowItems: List<String>, amount: List<String>) {
-        LazyColumn {
-            items(category) { item ->
-                CardItem(
-                    name = item,
-                    rowItems = rowItems,
-                    amount = amount
-                )
+    fun LazyColumnWithCards(
+        category: List<String>,
+        items: List<List<Int>>,
+    ) {
+        var index by remember { mutableIntStateOf(0) }
 
+        LazyColumn {
+            index = 0
+            items(category) { item ->
+                Card() {
+                    GridOfFruitsItem(itemsDisplay = items[index] )
+                    index++
+                }
             }
         }
     }
@@ -113,7 +123,7 @@ class HomeScreen {
     @Composable
     fun PreviewLazyColumnWithCards() {
         val category = listOf(
-            "Condiments", "Meat", "Dairy", "Eggs",
+            "under 70 calories", "between 70 and 90 calories", "over 90 calories",
             )
         val rowItems = listOf(
             "Vandmelon", "Æble", "Banan"
@@ -122,60 +132,10 @@ class HomeScreen {
             "5 kg", "10kg", "2 stk"
         )
 
-        LazyColumnWithCards(category = category, rowItems = rowItems, amount = amount)
+        //LazyColumnWithCards(category = categorys, items = listOf(70,31,75,94))
 
         BottomBar()
     }
 }
 
-@Composable
-fun CardRow(items: List<String>, amount: List<String>) {
-    Row {
-        items.forEachIndexed { index, item ->
-            Card(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .weight(1f),
-                shape = RoundedCornerShape(8.dp),
 
-
-                ) {
-                Text(
-                    text = item,
-                    modifier = Modifier
-                        .padding(top = 32.dp)
-                        .align(Alignment.CenterHorizontally)
-
-
-                )
-                Text(
-                    text = amount[index],
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .align(Alignment.CenterHorizontally)
-
-                )
-
-            }
-        }
-    }
-}
-@Composable
-fun CardItem(name: String, rowItems: List<String>, amount: List<String>) {
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
-
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(bottom = 32.dp)
-
-        ) {
-            Text(text = name)
-            CardRow(items = rowItems, amount = amount)
-
-        }
-    }
-}

@@ -12,6 +12,7 @@ import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.screens.AddFruitPageLayout
 import com.example.miniprojektliste.screens.FruitViewmodel
+import com.example.miniprojektliste.screens.HomeScreen
 import com.example.miniprojektliste.ui.theme.MiniprojektListeTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -25,6 +26,13 @@ class MainActivity : ComponentActivity() {
         val dao: FruitDao = AppDatabase.getDatabase(this).fruitDao()
         GlobalScope.launch { AppDatabase.getDatabase(applicationContext).fruitDao().getAll() }
 
+        val listOfCategorys: List<List<Int>?
+                > = listOf(
+            dao.sortByCals(0,70),
+            dao.sortByCals(70, 100),
+            dao.sortByCals(100,300)
+        )
+
         setContent {
             MiniprojektListeTheme {
                 // A surface container using the 'background' color from the theme
@@ -32,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AddFruitPageLayout(dao,viewModel)
+
                 }
             }
         }
