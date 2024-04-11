@@ -5,8 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.miniprojektliste.network.Fruit
+import com.example.miniprojektliste.network.Nutrition
 
-@Database(entities = [ Fruit::class ], version = 1)
+@Database(entities = [ Fruit::class, Nutrition::class ], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun fruitDao(): FruitDao
 

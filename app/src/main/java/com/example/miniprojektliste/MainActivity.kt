@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val dao: FruitDao = AppDatabase.getDatabase(this).fruitDao()
-        //GlobalScope.launch { AppDatabase.getDatabase(applicationContext).fruitDao().getAll() }
+        GlobalScope.launch { AppDatabase.getDatabase(applicationContext).fruitDao().getAll() }
 
         setContent {
             MiniprojektListeTheme {
@@ -32,11 +32,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-<<<<<<< HEAD
-                    AddFruitPageLayout(dao)
-=======
-                    AddFruitPageLayout(AppDatabase.getDatabase(this).fruitDao(), viewModel)
->>>>>>> 52c5a74bfee74da527f0dd29ab602af2c8ed912c
+                    AddFruitPageLayout(dao,viewModel)
                 }
             }
         }
