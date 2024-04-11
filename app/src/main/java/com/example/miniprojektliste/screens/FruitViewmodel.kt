@@ -29,10 +29,4 @@ class FruitViewmodel : ViewModel() {
             }
         }
     }
-
-    fun getFruitDetails(fruitId: Int, dao: FruitDao): Pair<String, Int> {
-        val fruitName = dao.findFruitNameById(fruitId)
-        val fruitCal = dao.findFruitCalById(fruitId)
-        return Pair(fruitName, fruitCal)
-    }
 }

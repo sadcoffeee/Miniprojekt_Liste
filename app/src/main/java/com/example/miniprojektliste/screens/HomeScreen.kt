@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -85,7 +87,13 @@ class HomeScreen {
                         .wrapContentSize()
                         .padding(16.dp)
                 ){
-                    Text(text = category[item])
+                    Text(
+                        text = category[item],
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .offset(x = 10.dp)
+                    )
                     GridOfFruitsItem(itemList = itemList[item], context = context)
                 }
             }
@@ -97,6 +105,8 @@ class HomeScreen {
     fun GridOfFruitsItem(itemList: List<Int>, context: Context) {
 
         val dao: FruitDao = AppDatabase.getDatabase(context).fruitDao()
+        var fruitName by remember { mutableStateOf("") }
+        var fruitCal by remember { mutableIntStateOf(0) }
 
         Card (
             modifier = Modifier
@@ -120,8 +130,14 @@ class HomeScreen {
                     ){
                         //val (fruitName, fruitCal) = FruitViewmodel().getFruitDetails(itemList[item], dao)
                         Column {
-                            Text(text = "fruitName", fontSize = 32.sp)
-                            Text(text = "fruitCal.toString()", fontSize = 16.sp)
+                            Text(
+                                text = "dao.findFruitNameById(itemList[item])",
+                                fontSize = 32.sp
+                            )
+                            Text(
+                                text = "dao.findFruitCalById(itemList[item]).toString()",
+                                fontSize = 16.sp
+                            )
                         }
                     }
                 }
@@ -134,12 +150,18 @@ class HomeScreen {
         val numRows = (itemList.size + 2) / 3 //assuming 3 items per row
 
         //calculate the height of each row, adjut if we need
-        val rowHeight = 150.dp
+        val rowHeight = 180.dp
 
-        //Calculate the total height of the card
-        val totalHeight = numRows * rowHeight
+        if (numRows > 1) {
+            //Calculate the total height of the card minus the height of the category
+            val totalHeight = numRows * rowHeight - 65.dp //new
+            return totalHeight
+        }
 
-        return totalHeight
+        else {
+            val totalHeight = numRows * rowHeight
+            return totalHeight
+        }
     }
 
 
