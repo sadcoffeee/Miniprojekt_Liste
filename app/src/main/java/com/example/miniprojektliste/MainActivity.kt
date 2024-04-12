@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
+import com.example.miniprojektliste.Database.Navigation.Navigation
 import com.example.miniprojektliste.screens.AddFruitPageLayout
 import com.example.miniprojektliste.screens.FruitViewmodel
 import com.example.miniprojektliste.screens.HomeScreen
@@ -34,14 +35,15 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
+
+
             MiniprojektListeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //HomeScreen().HomeScreenPage(context = this)
-                    AddFruitPageLayout(context = this, viewModel = viewModel)
+                    Navigation(context = this, viewmodel = viewModel)
                 }
             }
         }

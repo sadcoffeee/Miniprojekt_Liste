@@ -52,8 +52,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.core.widget.TextViewCompat.AutoSizeTextType
+import androidx.navigation.NavController
 import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
+import com.example.miniprojektliste.Database.Navigation.Screen
 import com.example.miniprojektliste.MainActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -77,8 +79,8 @@ class HomeScreen {
         LaunchedEffect(Unit){
             itemList = listOf(
                 dao.sortByCals(0,70),
-                dao.sortByCals(70,100),
-                dao.sortByCals(0,300)
+                dao.sortByCals(70,90),
+                dao.sortByCals(90,300)
             )
             Log.d("database itesms", itemList.toString())
         }
@@ -197,12 +199,11 @@ class HomeScreen {
     }
 
 
-    @Preview(
-        showSystemUi = true
-    )
+
     @Composable
     fun HomeScreenPage(
         context: Context = LocalContext.current,
+        navController: NavController,
         modifier: Modifier = Modifier
     ) {
         LazyColumnWithCards(
@@ -211,6 +212,7 @@ class HomeScreen {
             ),
             context = context
         )
+        BottomBar(navController)
     }
 
 
@@ -228,10 +230,12 @@ class HomeScreen {
 
         //LazyColumnWithCards(category = categorys, items = listOf(70,31,75,94))
 
-        BottomBar()
+
     }
     @Composable
-    fun BottomBar() {
+    fun BottomBar(
+        navController: NavController
+    ) {
         Column(
             verticalArrangement = Arrangement.Bottom,
             modifier = Modifier
@@ -247,7 +251,7 @@ class HomeScreen {
             ) {
 
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate(Screen.AddScreen.route) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Yellow,
                         contentColor = Color.Red

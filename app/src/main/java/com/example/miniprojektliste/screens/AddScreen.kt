@@ -24,8 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
+import com.example.miniprojektliste.Database.Navigation.Screen
 import com.example.miniprojektliste.R
 import com.example.miniprojektliste.network.Fruit
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -39,6 +41,7 @@ import kotlinx.coroutines.launch
 fun AddFruitPageLayout(
     context: Context,
     viewModel: FruitViewmodel,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val dao: FruitDao = AppDatabase.getDatabase(context).fruitDao()
@@ -77,117 +80,36 @@ fun AddFruitPageLayout(
         )
         Spacer(modifier = modifier.height(32.dp))
 
-        var listIndex by remember { mutableIntStateOf(0) }
-        val addFruits = listOf(
-            Fruit(
-                name = "Strawberry",
-                family = "Rosaceae",
-                order = "Rosales",
-                genus = "Fragaria",
-                amount = 1
-            ),
-            Fruit(
-                name = "Banana",
-                family = "Musaceae",
-                order = "Zingiberales",
-                genus = "Musa",
-                amount = 1
-            ),
-            Fruit(
-                name = "Tomato",
-                family = "Solanaceae",
-                order = "Solanales",
-                genus = "Solanum",
-                amount = 1
-            ),
-            Fruit(
-                name = "Pear",
-                family = "Rosaceae",
-                order = "Rosales",
-                genus = "Pyrus",
-                amount = 1
-            ),
-            Fruit(
-                name = "Fig",
-                family = "Moraceae",
-                order = "Rosales",
-                genus = "Ficus",
-                amount = 1
-            ),
-            Fruit(
-                name = "Orange",
-                family = "Rutaceae",
-                order = "Sapindales",
-                genus = "Citrus",
-                amount = 1
-            ),
-        )
+
 
 
         Button(onClick = {
 
             GlobalScope.launch {
-                val fruitToAdd = addFruits[listIndex]
-                dao.insertObject(fruitToAdd)
-
-                val insertedFruit = dao.findByName(addFruits[listIndex].name)
-                val fruitId = insertedFruit.id
-
-                val addNutrition = listOf(
-                    Fruit.Nutrition(
-                        fruitId = fruitId,
-                        calories = 81,
-                        fat = 0.4,
-                        sugar = 5.4,
-                        carbohydrates = 5.5,
-                        protein = 0.8
-                    ),
-                    Fruit.Nutrition(
-                        fruitId = fruitId,
-                        calories = 96,
-                        fat = 0.2,
-                        sugar = 17.2,
-                        carbohydrates = 22.0,
-                        protein = 1.0
-                    ),
-                    Fruit.Nutrition(
-                        fruitId = fruitId,
-                        calories = 74,
-                        fat = 0.2,
-                        sugar = 2.6,
-                        carbohydrates = 3.9,
-                        protein = 0.9
-                    ),
-                    Fruit.Nutrition(
-                        fruitId = fruitId,
-                        calories = 57,
-                        fat = 0.1,
-                        sugar = 10.0,
-                        carbohydrates = 15.0,
-                        protein = 0.4
-                    ),
-                    Fruit.Nutrition(
-                        fruitId = fruitId,
-                        calories = 74,
-                        fat = 0.3,
-                        sugar = 16.0,
-                        carbohydrates = 19.0,
-                        protein = 0.8
-                    ),
-                    Fruit.Nutrition(
-                        fruitId = fruitId,
-                        calories = 43,
-                        fat = 0.2,
-                        sugar = 8.2,
-                        carbohydrates = 8.3,
-                        protein = 1.0
-                    ),
+                dao.insertObject(
+                    Fruit(
+                        name = fruitInput,
+                        family = "Rosaceae",
+                        order = "Rosales",
+                        genus = "Fragaria",
+                        amount = amountString.toIntOrNull() ?: 0
+                    )
                 )
 
-                val nutritionsToAdd = addNutrition[listIndex]
-                dao.insertObjectN(nutritionsToAdd)
-                listIndex++
+                val insertedFruit = dao.findByName(fruitInput)
+                val fruitId = insertedFruit.id
+
+                val nutritionToAdd = Fruit.Nutrition(
+                    fruitId = fruitId,
+                    calories = amountString.toIntOrNull() ?: 0,
+                    fat = 0.4,
+                    sugar = 5.2,
+                    carbohydrates = 5.5,
+                    protein = 0.8
+                )
+                dao.insertObjectN(nutritionToAdd)
             }
+            navController.navigate(Screen.HomeScreen.route)
         }
         ) {
             Text(text = stringResource(R.string.btn_text))
