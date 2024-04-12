@@ -1,6 +1,7 @@
 package com.example.miniprojektliste.screens
 
 import android.content.Context
+import android.text.AutoText
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
@@ -44,11 +45,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import androidx.core.widget.TextViewCompat.AutoSizeTextType
 import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.MainActivity
@@ -84,7 +87,7 @@ class HomeScreen {
             items(itemList.size) { item ->
                 Card (
                     modifier = Modifier
-                        .background(Color.Yellow)
+                        .background(Color.DarkGray)
                         .fillMaxWidth()
                         .height(calculateCardHeight(itemList[item]))
                         .wrapContentSize()
@@ -130,7 +133,6 @@ class HomeScreen {
 
         Card (
             modifier = Modifier
-                .background(Color.Red)
                 .fillMaxSize()
         ){
             LazyVerticalGrid(
@@ -146,18 +148,27 @@ class HomeScreen {
                             .padding(8.dp)
                             .aspectRatio(1f)
                             .clip(RoundedCornerShape(5.dp))
-                            .background(Color.Green)
+                            .background(Color.Gray)
                     ){
                         //val (fruitName, fruitCal) = FruitViewmodel().getFruitDetails(itemList[item], dao)
 
-                        Column {
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ){
                             Text(
                                 text = fruitList.getOrNull(item) ?: "Loading...",
-                                fontSize = 32.sp
+                                fontSize = 32.sp,
+                                color = Color.Black,
+                                textAlign = TextAlign.Center
                             )
                             Text(
-                                text = calList.getOrNull(item)?.toString() ?: "Loading...",
-                                fontSize = 16.sp
+                                text = calList.getOrNull(item)?.toString() ?: "",
+                                fontSize = 24.sp,
+                                color = Color.DarkGray,
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
