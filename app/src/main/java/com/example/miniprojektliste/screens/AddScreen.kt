@@ -1,5 +1,6 @@
 package com.example.miniprojektliste.screens
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,22 +24,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.R
 import com.example.miniprojektliste.network.Fruit
-import com.example.miniprojektliste.network.Nutrition
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun AddFruitPageLayout(
-    dao: FruitDao,
+    context: Context,
     viewModel: FruitViewmodel,
     modifier: Modifier = Modifier
 ) {
+    val dao: FruitDao = AppDatabase.getDatabase(context).fruitDao()
     var fruitInput by remember { mutableStateOf("") }
     var amountString by remember { mutableStateOf("") }
 
@@ -81,36 +84,42 @@ fun AddFruitPageLayout(
                 family = "Rosaceae",
                 order = "Rosales",
                 genus = "Fragaria",
+                amount = 1
             ),
             Fruit(
                 name = "Banana",
                 family = "Musaceae",
                 order = "Zingiberales",
                 genus = "Musa",
+                amount = 1
             ),
             Fruit(
                 name = "Tomato",
                 family = "Solanaceae",
                 order = "Solanales",
                 genus = "Solanum",
+                amount = 1
             ),
             Fruit(
                 name = "Pear",
                 family = "Rosaceae",
                 order = "Rosales",
                 genus = "Pyrus",
+                amount = 1
             ),
             Fruit(
                 name = "Fig",
                 family = "Moraceae",
                 order = "Rosales",
                 genus = "Ficus",
+                amount = 1
             ),
             Fruit(
                 name = "Orange",
                 family = "Rutaceae",
                 order = "Sapindales",
                 genus = "Citrus",
+                amount = 1
             ),
         )
 
@@ -125,7 +134,7 @@ fun AddFruitPageLayout(
                 val fruitId = insertedFruit.id
 
                 val addNutrition = listOf(
-                    Nutrition(
+                    Fruit.Nutrition(
                         fruitId = fruitId,
                         calories = 81,
                         fat = 0.4,
@@ -133,7 +142,7 @@ fun AddFruitPageLayout(
                         carbohydrates = 5.5,
                         protein = 0.8
                     ),
-                    Nutrition(
+                    Fruit.Nutrition(
                         fruitId = fruitId,
                         calories = 96,
                         fat = 0.2,
@@ -141,7 +150,7 @@ fun AddFruitPageLayout(
                         carbohydrates = 22.0,
                         protein = 1.0
                     ),
-                    Nutrition(
+                    Fruit.Nutrition(
                         fruitId = fruitId,
                         calories = 74,
                         fat = 0.2,
@@ -149,7 +158,7 @@ fun AddFruitPageLayout(
                         carbohydrates = 3.9,
                         protein = 0.9
                     ),
-                    Nutrition(
+                    Fruit.Nutrition(
                         fruitId = fruitId,
                         calories = 57,
                         fat = 0.1,
@@ -157,7 +166,7 @@ fun AddFruitPageLayout(
                         carbohydrates = 15.0,
                         protein = 0.4
                     ),
-                    Nutrition(
+                    Fruit.Nutrition(
                         fruitId = fruitId,
                         calories = 74,
                         fat = 0.3,
@@ -165,7 +174,7 @@ fun AddFruitPageLayout(
                         carbohydrates = 19.0,
                         protein = 0.8
                     ),
-                    Nutrition(
+                    Fruit.Nutrition(
                         fruitId = fruitId,
                         calories = 43,
                         fat = 0.2,
