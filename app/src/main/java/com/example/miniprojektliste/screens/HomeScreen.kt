@@ -117,6 +117,7 @@ class HomeScreen {
         //var fruitCal by remember { mutableIntStateOf(0) }
         var fruitList by remember { mutableStateOf<List<String>>(emptyList()) }
         var calList by remember { mutableStateOf<List<Int>>(emptyList()) }
+        var amountList by remember { mutableStateOf<List<Int>>(emptyList()) }
 
         LaunchedEffect(Unit) {
             val job = launch {
@@ -129,8 +130,14 @@ class HomeScreen {
                     calList = calList.toMutableList().apply { add(dao.findFruitCalById(i)) }
                 }
             }
+            val job3 = launch {
+                for (i in itemList) {
+                    amountList = amountList.toMutableList().apply { add(dao.findFruitCalById(i)) }
+                }
+            }
             job.join()
             job2.join()
+            job3.join()
         }
 
         Card (
@@ -170,6 +177,12 @@ class HomeScreen {
                                 text = calList.getOrNull(item)?.toString() ?: "",
                                 fontSize = 24.sp,
                                 color = Color.DarkGray,
+                                textAlign = TextAlign.Center
+                            )
+                            Text(
+                                text = amountList.getOrNull(item)?.toString() ?: "",
+                                fontSize = 24.sp,
+                                color = Color.Red,
                                 textAlign = TextAlign.Center
                             )
                         }
