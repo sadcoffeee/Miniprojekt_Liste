@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.miniprojektliste.network.Fruit
-import com.example.miniprojektliste.network.Nutrition
 
 @Dao
 interface FruitDao {
@@ -29,9 +28,9 @@ interface FruitDao {
     suspend fun insertObject(obj: Fruit)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertObjectN(obj: Nutrition)
+    suspend fun insertObjectN(obj: Fruit.Nutrition)
 
-    suspend fun insertFruitNutritions(fruit: Fruit, nutrition: Nutrition){
+    suspend fun insertFruitNutritions(fruit: Fruit, nutrition: Fruit.Nutrition){
         insertObject(fruit)
         insertObjectN(nutrition)
     }
@@ -40,7 +39,7 @@ interface FruitDao {
     suspend fun insertListOfObjects(objects: List<Fruit>)
 
     @Query("SELECT * FROM nutritions WHERE fruitId = :fruitId")
-    suspend fun getNutritionByFruitId(fruitId: Int): Nutrition?
+    suspend fun getNutritionByFruitId(fruitId: Int): Fruit.Nutrition?
 
     @Query("SELECT fruitId FROM nutritions WHERE calories > :min AND calories < :max")
     suspend fun sortByCals( min: Int, max: Int): List<Int>

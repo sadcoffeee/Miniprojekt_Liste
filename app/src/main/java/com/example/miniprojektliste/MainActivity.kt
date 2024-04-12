@@ -29,6 +29,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val dao: FruitDao = AppDatabase.getDatabase(this).fruitDao()
+        GlobalScope.launch {
+            AppDatabase.getDatabase(applicationContext).fruitDao().getAll()
+        }
 
         setContent {
             MiniprojektListeTheme {
@@ -37,7 +40,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen().HomeScreenPage(context = this)
+                    //HomeScreen().HomeScreenPage(context = this)
+                    AddFruitPageLayout(context = this, viewModel = viewModel)
                 }
             }
         }

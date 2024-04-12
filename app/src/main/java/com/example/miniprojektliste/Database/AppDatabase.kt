@@ -10,7 +10,7 @@ import com.example.miniprojektliste.network.FruitOnline
 @Database(
     entities = [
         Fruit::class, Fruit.Nutrition::class,
-        FruitOnline::class,FruitOnline.NutritionOnline::class
+        FruitOnline::class, FruitOnline.NutritionOnline::class
     ],
     version = 1
 )
