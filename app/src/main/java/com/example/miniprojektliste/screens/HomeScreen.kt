@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -58,11 +61,11 @@ import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.Database.Navigation.Screen
 import com.example.miniprojektliste.MainActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
-import java.time.format.TextStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.isUnspecified
+import androidx.room.util.copy
+
 
 class HomeScreen {
 
@@ -71,6 +74,7 @@ class HomeScreen {
     fun LazyColumnWithCards(
         category: List<String>,
         context: Context
+
     ) {
         val dao: FruitDao = AppDatabase.getDatabase(context).fruitDao()
 
@@ -229,22 +233,50 @@ class HomeScreen {
     }
 
 
-    @Composable
-    fun PreviewLazyColumnWithCards() {
-        val category = listOf(
-            "under 70 calories", "between 70 and 90 calories", "over 90 calories",
-            )
-        val rowItems = listOf(
-            "Vandmelon", "Æble", "Banan"
-        )
-        val amount = listOf(
-            "5 kg", "10kg", "2 stk"
-        )
-
-        //LazyColumnWithCards(category = categorys, items = listOf(70,31,75,94))
-
-
     }
+
+@Composable
+fun AutoResizedText(
+    text: String,
+    style: TextStyle = MaterialTheme.typography.bodyLarge,
+    modifier: Modifier = Modifier,
+    color: Color = style.color
+) {
+    var resizedTextStyle by remember {
+        mutableStateOf(style)
+    }
+    var shouldDraw by remember {
+        mutableStateOf(false)
+    }
+    val defaultFontSize = MaterialTheme.typography.bodySmall.fontSize
+
+    Text(
+        text = text,
+        color = color,
+        modifier = modifier.drawWithContent {
+            if ( shouldDraw) {
+                drawContent()
+            }
+        },
+        softWrap = false, //makes sure only one line
+        style = resizedTextStyle,
+        onTextLayout = { result ->
+            if (result.didOverflowWidth) {
+                if(style.fontSize.isUnspecified){
+                    resizedTextStyle = resizedTextStyle.copy(
+                        fontSize = defaultFontSize
+                    )
+                }
+                resizedTextStyle = resizedTextStyle.copy(
+                    fontSize = resizedTextStyle.fontSize * 0.95
+                )
+            }
+            else {
+               shouldDraw = true
+            }
+        }
+    )
+}
     @Composable
     fun BottomBar(
         navController: NavController
@@ -254,20 +286,39 @@ class HomeScreen {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Box(
-                contentAlignment = Alignment.Center,
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp)
-                    .background(Color.Gray)
+                    .background(Color.Gray),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
 
             ) {
+                Button(
+                    onClick = { navController.navigate(Screen.HomeScreen.route) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.DarkGray,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .height(64.dp)
+                        .width(128.dp),
+
+
+                    ) {
+                    Text(
+                        "Home Screen",
+                        textAlign = TextAlign.Center
+                    )
+                }
+
 
                 Button(
                     onClick = { navController.navigate(Screen.AddScreen.route) },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Yellow,
-                        contentColor = Color.Red
+                        containerColor = Color.DarkGray,
+                        contentColor = Color.White
                     ),
                     modifier = Modifier
                         .height(64.dp)
@@ -278,11 +329,14 @@ class HomeScreen {
 
 
                 }
+
             }
         }
-
-
     }
-}
+        
+
+
+
+
 
 
