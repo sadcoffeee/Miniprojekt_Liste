@@ -1,11 +1,35 @@
 package com.example.miniprojektliste.network
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import retrofit2.Retrofit
-import retrofit2.http.GET
+
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
 
 
+private const val BASE_URL = "https://www.fruityvice.com/api/fruit/"
+
+object FruitsApi {
+    private val client = OkHttpClient()
+
+    fun getFruits(): List<FruitWeb> {
+
+        val request = Request.Builder()
+            .url(BASE_URL + "all")
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+            val json = response.body?.string() ?: throw IOException("Empty response")
+
+            return Gson().fromJson(json, object : TypeToken<List<FruitWeb>>() {}.type)
+        }
+    }
+}
+
+
+
+/* This is the code that's supposed to work but doesn't
 private const val BASE_URL =
     "https://www.fruityvice.com/api/fruit/"
 
@@ -25,3 +49,4 @@ interface FruitApiService {
     @GET("all")
     suspend fun getFruits(): List<Fruit>
 }
+*/

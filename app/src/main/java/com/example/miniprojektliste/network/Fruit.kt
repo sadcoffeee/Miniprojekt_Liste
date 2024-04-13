@@ -66,3 +66,21 @@ data class FruitOnline(
         @ColumnInfo(name = "protein") val protein: Double
     )
 }
+
+data class FruitWeb(
+    val name: String,
+    val id: Int,
+    val family: String,
+    val order: String,
+    val genus: String,
+    val nutritions: NutritionsWeb
+)
+
+
+data class NutritionsWeb(
+    val calories: Int,
+    val fat: Double,
+    val sugar: Double,
+    val carbohydrates: Double,
+    val protein: Double
+)

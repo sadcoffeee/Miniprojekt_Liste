@@ -1,26 +1,25 @@
 package com.example.miniprojektliste.screens
 
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.miniprojektliste.Database.FruitDao
-import com.example.miniprojektliste.network.Fruit
+import com.example.miniprojektliste.network.FruitWeb
 import com.example.miniprojektliste.network.FruitsApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FruitViewmodel : ViewModel() {
-    private val _fruits = MutableLiveData<List<Fruit>>()
-    val fruits: LiveData<List<Fruit>> get() = _fruits
+    private val _fruits = MutableStateFlow<List<FruitWeb>>(emptyList())
+    val fruits: StateFlow<List<FruitWeb>> get() = _fruits
 
     fun fetchFruits() {
         viewModelScope.launch {
             try {
                 val fruitsList = withContext(Dispatchers.IO) {
-                    FruitsApi.retrofitService.getFruits()
+                    FruitsApi.getFruits()
                 }
                 _fruits.value = fruitsList
             } catch (e: Exception) {

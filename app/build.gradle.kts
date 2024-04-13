@@ -102,4 +102,6 @@ dependencies {
     // Kotlin serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation ("androidx.compose.runtime:runtime-livedata")
+    implementation ("com.google.code.gson:gson:2.10.1")
+
 }
