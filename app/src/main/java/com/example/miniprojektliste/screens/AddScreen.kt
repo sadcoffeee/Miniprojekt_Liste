@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
@@ -25,10 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.miniprojektliste.Database.AppDatabase
 import com.example.miniprojektliste.Database.FruitDao
@@ -57,6 +62,7 @@ fun AddFruitPageLayout(
     var fruitInput by remember { mutableStateOf("") }
     var amountString by remember { mutableStateOf("") }
     var webFruitsList by remember { mutableStateOf<List<FruitWeb>>(emptyList()) }
+    var wrongFruit by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val job1 = launch {
@@ -90,6 +96,9 @@ fun AddFruitPageLayout(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        if (wrongFruit) {
+            WrongFruitText()
+        }
 
         ExposedDropdownMenuBox(
             expanded = isExpanded,
@@ -149,35 +158,38 @@ fun AddFruitPageLayout(
         Spacer(modifier = modifier.height(32.dp))
 
 
-
-
         Button(onClick = {
 
-            GlobalScope.launch {
-                dao.insertObject(
-                    Fruit(
-                        name = fruitName,
-                        family = fruitFamily,
-                        order = fruitOrder,
-                        genus = fruitGenus,
-                        amount = amountString.toIntOrNull() ?: 0
+            if (checkInput(list = webFruitsList, stringToCheck = fruitInput)){
+                GlobalScope.launch {
+                    dao.insertObject(
+                        Fruit(
+                            name = fruitName,
+                            family = fruitFamily,
+                            order = fruitOrder,
+                            genus = fruitGenus,
+                            amount = amountString.toIntOrNull() ?: 0
+                        )
                     )
-                )
 
-                val insertedFruit = dao.findByName(fruitInput)
-                val fruitId = insertedFruit.id
+                    val insertedFruit = dao.findByName(fruitInput)
+                    val fruitId = insertedFruit.id
 
-                val nutritionToAdd = Fruit.Nutrition(
-                    fruitId = fruitId,
-                    calories = fruitCalories,
-                    fat = fruitFat,
-                    sugar = fruitSugar,
-                    carbohydrates = fruitCarbonhydrates,
-                    protein = fruitProtein
-                )
-                dao.insertObjectN(nutritionToAdd)
+                    val nutritionToAdd = Fruit.Nutrition(
+                        fruitId = fruitId,
+                        calories = fruitCalories,
+                        fat = fruitFat,
+                        sugar = fruitSugar,
+                        carbohydrates = fruitCarbonhydrates,
+                        protein = fruitProtein
+                    )
+                    dao.insertObjectN(nutritionToAdd)
+                }
+                navController.navigate(Screen.HomeScreen.route)
             }
-            navController.navigate(Screen.HomeScreen.route)
+            else {
+                wrongFruit = true
+            }
         }
         ) {
             Text(text = stringResource(R.string.btn_text))
@@ -204,3 +216,24 @@ fun EditTextField(
     )
 }
 
+@Composable
+fun WrongFruitText(){
+    Text(
+        text = stringResource(R.string.wrong_fruit),
+        color = Color.Red,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.ExtraBold,
+        modifier = Modifier
+            .padding(8.dp)
+    )
+}
+
+fun checkInput(list: List<FruitWeb>, stringToCheck: String): Boolean{
+    for (i in list){
+        if (stringToCheck == i.name){
+            return true
+            break
+        }
+    }
+    return false
+}
