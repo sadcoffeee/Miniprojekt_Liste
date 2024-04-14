@@ -63,6 +63,7 @@ import com.example.miniprojektliste.MainActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.isUnspecified
 import androidx.room.util.copy
 
@@ -171,21 +172,19 @@ class HomeScreen {
                             modifier = Modifier
                                 .fillMaxSize()
                         ){
-                            Text(
+                            AutoResizedText(
                                 text = fruitList.getOrNull(item) ?: "Loading...",
-                                fontSize = 32.sp,
-                                color = Color.Black,
-                                textAlign = TextAlign.Center
-                            )
+                                )
+
                             Text(
                                 text = calList.getOrNull(item)?.toString() ?: "",
-                                fontSize = 24.sp,
+                                fontSize = 12.sp,
                                 color = Color.DarkGray,
                                 textAlign = TextAlign.Center
                             )
                             Text(
                                 text = amountList.getOrNull(item)?.toString() ?: "",
-                                fontSize = 24.sp,
+                                fontSize = 12.sp,
                                 color = Color.Red,
                                 textAlign = TextAlign.Center
                             )
@@ -238,17 +237,17 @@ class HomeScreen {
 @Composable
 fun AutoResizedText(
     text: String,
-    style: TextStyle = MaterialTheme.typography.bodyLarge,
+    fontSize: TextUnit = 28.sp,
     modifier: Modifier = Modifier,
-    color: Color = style.color
+    color: Color = Color.Black
 ) {
-    var resizedTextStyle by remember {
-        mutableStateOf(style)
+    var currentFontSize by remember {
+        mutableStateOf(fontSize)
     }
     var shouldDraw by remember {
         mutableStateOf(false)
     }
-    val defaultFontSize = MaterialTheme.typography.bodySmall.fontSize
+    val defaultFontSize = 28.sp
 
     Text(
         text = text,
@@ -259,17 +258,15 @@ fun AutoResizedText(
             }
         },
         softWrap = false, //makes sure only one line
-        style = resizedTextStyle,
+        style = TextStyle(
+            fontSize = currentFontSize
+        ),
         onTextLayout = { result ->
             if (result.didOverflowWidth) {
-                if(style.fontSize.isUnspecified){
-                    resizedTextStyle = resizedTextStyle.copy(
-                        fontSize = defaultFontSize
-                    )
+                if(currentFontSize.isUnspecified){
+                    currentFontSize = defaultFontSize
                 }
-                resizedTextStyle = resizedTextStyle.copy(
-                    fontSize = resizedTextStyle.fontSize * 0.95
-                )
+                    currentFontSize *= 0.95
             }
             else {
                shouldDraw = true
