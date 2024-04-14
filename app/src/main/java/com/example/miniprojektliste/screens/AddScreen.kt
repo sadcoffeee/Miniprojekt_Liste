@@ -107,6 +107,7 @@ fun AddFruitPageLayout(
             Text(text = stringResource(R.string.btn_text))
         }
     }
+    HomeScreen().BottomBar(navController)
 }
 
 @Composable
