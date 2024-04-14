@@ -137,7 +137,7 @@ class HomeScreen {
             }
             val job3 = launch {
                 for (i in itemList) {
-                    amountList = amountList.toMutableList().apply { add(dao.findFruitCalById(i)) }
+                    amountList = amountList.toMutableList().apply { add(dao.findFruitAmountById(i)) }
                 }
             }
             job.join()

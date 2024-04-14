@@ -9,10 +9,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,12 +35,17 @@ import com.example.miniprojektliste.Database.FruitDao
 import com.example.miniprojektliste.Database.Navigation.Screen
 import com.example.miniprojektliste.R
 import com.example.miniprojektliste.network.Fruit
+import com.example.miniprojektliste.network.FruitWeb
+import com.example.miniprojektliste.network.FruitsApi
+import com.example.miniprojektliste.network.NutritionsWeb
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
-@OptIn(DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AddFruitPageLayout(
     context: Context,
@@ -44,6 +56,33 @@ fun AddFruitPageLayout(
     val dao: FruitDao = AppDatabase.getDatabase(context).fruitDao()
     var fruitInput by remember { mutableStateOf("") }
     var amountString by remember { mutableStateOf("") }
+    var webFruitsList by remember { mutableStateOf<List<FruitWeb>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        val job1 = launch {
+            webFruitsList = withContext(Dispatchers.IO) {
+                FruitsApi.getFruits()
+            }
+        }
+
+        job1.join()
+    }
+
+    //Dropdown meny
+    var isExpanded by remember { mutableStateOf(false) }
+    var filteredFruits by remember { mutableStateOf(webFruitsList) }
+    //Data to save after item selected
+    var fruitName by remember { mutableStateOf("") }
+    var DDFruitId by remember { mutableIntStateOf(0) }
+    var fruitFamily by remember { mutableStateOf("") }
+    var fruitOrder by remember { mutableStateOf("") }
+    var fruitGenus by remember { mutableStateOf("") }
+    var fruitCalories by remember { mutableIntStateOf(0) }
+    var fruitFat by remember { mutableDoubleStateOf(0.0) }
+    var fruitSugar by remember { mutableDoubleStateOf(0.0) }
+    var fruitCarbonhydrates by remember { mutableDoubleStateOf(0.0) }
+    var fruitProtein by remember { mutableDoubleStateOf(0.0) }
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,15 +90,52 @@ fun AddFruitPageLayout(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        EditTextField(
-            label = R.string.choose_item_tx,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
-            ),
-            value = fruitInput,
-            onValueChanged = { fruitInput = it }
-        )
+
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = it }
+        ) {
+            TextField(
+                value = fruitInput,
+                onValueChange = {
+                    fruitInput = it
+                    isExpanded = true
+                },
+                readOnly = false,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                },
+                modifier = Modifier
+                    .menuAnchor()
+            )
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false }
+            ) {
+                webFruitsList.forEach { fruit ->
+                    if (fruit.name.contains(fruitInput, ignoreCase = true)) {
+                        DropdownMenuItem(
+                            text = { Text(fruit.name) },
+                            onClick = {
+                                fruitInput = fruit.name
+                                fruitName = fruit.name
+                                DDFruitId = fruit.id
+                                fruitFamily = fruit.family
+                                fruitOrder = fruit.order
+                                fruitGenus = fruit.genus
+                                fruitCalories = fruit.nutritions.calories
+                                fruitFat = fruit.nutritions.fat
+                                fruitSugar = fruit.nutritions.sugar
+                                fruitCarbonhydrates = fruit.nutritions.carbohydrates
+                                fruitProtein = fruit.nutritions.protein
+                                isExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
         Spacer(modifier = modifier.height(32.dp))
         EditTextField(
             label = R.string.amount,
@@ -80,10 +156,10 @@ fun AddFruitPageLayout(
             GlobalScope.launch {
                 dao.insertObject(
                     Fruit(
-                        name = fruitInput,
-                        family = "Rosaceae",
-                        order = "Rosales",
-                        genus = "Fragaria",
+                        name = fruitName,
+                        family = fruitFamily,
+                        order = fruitOrder,
+                        genus = fruitGenus,
                         amount = amountString.toIntOrNull() ?: 0
                     )
                 )
@@ -93,11 +169,11 @@ fun AddFruitPageLayout(
 
                 val nutritionToAdd = Fruit.Nutrition(
                     fruitId = fruitId,
-                    calories = amountString.toIntOrNull() ?: 0,
-                    fat = 0.4,
-                    sugar = 5.2,
-                    carbohydrates = 5.5,
-                    protein = 0.8
+                    calories = fruitCalories,
+                    fat = fruitFat,
+                    sugar = fruitSugar,
+                    carbohydrates = fruitCarbonhydrates,
+                    protein = fruitProtein
                 )
                 dao.insertObjectN(nutritionToAdd)
             }
@@ -107,7 +183,7 @@ fun AddFruitPageLayout(
             Text(text = stringResource(R.string.btn_text))
         }
     }
-    HomeScreen().BottomBar(navController)
+    BottomBar(navController)
 }
 
 @Composable
